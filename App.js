@@ -1,20 +1,132 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
+import { AntDesign } from '@expo/vector-icons'; 
+import Modal from './src/components/Modal';
 
 export default function App() {
+
+  const [valueInput, setValueInput] = React.useState('')
+  const [taskList, setTaskList] = React.useState([])
+  const [itemSelected, setItemSelected] = useState("")
+  const [modalVisble, setModalVisible] = useState(false)
+
+  const onChangeValueInput = text => {
+    setValueInput(text)
+  }
+
+  const addTaskItem = ()=>{
+    setTaskList(prevState => [...prevState, valueInput])
+    setValueInput("")
+  }
+
+  const printItem = ({item}) =>(
+    <View style={styles.itemOnList}>
+      {/* <AntDesign name="check" size={24} color="black" onPress={() => handleModal(item)} /> */}
+      <Text>{item}</Text>
+      <AntDesign name="delete" size={24} color="red" onPress={() => handleModal(item)} />
+    </View>
+  )
+
+  const deleteTaskList = ()=>{
+    setTaskList([])
+  }
+
+  const handleModal = item => {
+    setItemSelected(item)
+    setModalVisible(true)
+  }
+
+  const onHandleDelete = item => {
+    console.log(item)
+    setTaskList(prevState => prevState.filter(element => element !== item))
+    setModalVisible(!modalVisble)
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Hola Coder</Text>
-      <StatusBar style="auto" />
+      <View style={styles.viewUno}>
+        <Text style={styles.title}>Lista de tareas</Text>
+        <View style={styles.contentAddList}>
+          <TextInput 
+          style={styles.input}
+          onChangeText={onChangeValueInput}
+          value={valueInput}
+          placeholder="Ingresa una tarea"
+          />
+          <Button
+            title="Agregar"
+            onPress={addTaskItem}
+          />
+        </View>
+      </View>
+      <View style={styles.viewDos}>
+        <FlatList
+          data={taskList}
+          renderItem={printItem}
+          keyExtractor={item => item}
+        />
+      </View>
+      <Modal
+        isVisible={modalVisble}
+        itemSelected={itemSelected}
+        actionDeleteItem={() => onHandleDelete(itemSelected)}
+        onDismissModal={setModalVisible}
+      />
+      {/* <Button
+            title="Borrar todo"
+            onPress={deleteTaskList}
+      /> */}
     </View>
+    
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
   },
+  viewUno: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    padding: 10,
+    marginTop: 80
+  },
+  title:{
+    fontSize: 40,
+    color: '#000',
+  },
+  contentAddList: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  viewDos: {
+    flexDirection: 'row',
+    marginBottom: 25,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  input: {
+    height: 40,
+    width: 250,
+    margin: 12,
+    borderBottomWidth: 1,
+    padding: 10,
+  },
+  itemOnList: {
+    backgroundColor: "#FFFFFF",
+    alignSelf: 'stretch',
+    margin: 7,
+    borderRadius: 15,
+    padding: 15,
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems: "center",
+  }
 });
