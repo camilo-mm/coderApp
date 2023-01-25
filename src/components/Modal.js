@@ -12,7 +12,7 @@ const Modal = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalStyle}>
           <Text style={styles.modalTextStyleIntro}>estas seguro de eliminar la tarea:</Text>
-          <Text style={styles.modalTextStyle}>{itemSelected}</Text>
+          <Text style={styles.modalTextStyle}>{itemSelected.itemTask}</Text>
           <View style={styles.modaloptions}>
             <Button title="Eliminar" color={"red"} onPress={() => actionDeleteItem()} />
             <Button title="Mantener" onPress={() => onDismissModal(false)} />

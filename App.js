@@ -9,20 +9,27 @@ export default function App() {
   const [taskList, setTaskList] = React.useState([])
   const [itemSelected, setItemSelected] = useState("")
   const [modalVisble, setModalVisible] = useState(false)
+  const [completed, setCompleted] = useState()
 
   const onChangeValueInput = text => {
     setValueInput(text)
   }
 
   const addTaskItem = ()=>{
-    setTaskList(prevState => [...prevState, valueInput])
+    const taskobject = {itemTask: valueInput, completed: false}
+    setTaskList(prevState => [...prevState, taskobject])
     setValueInput("")
   }
 
+  const completeTask = (item) =>{
+      item.completed = !item.completed;
+      setTaskList( [ ...taskList ] ) 
+  }
+
   const printItem = ({item}) =>(
-    <View style={styles.itemOnList}>
-      {/* <AntDesign name="check" size={24} color="black" onPress={() => handleModal(item)} /> */}
-      <Text>{item}</Text>
+    <View style={styles.itemOnList} >
+      <AntDesign name={item.completed ? "checkcircle" : "check"} size={24} color="black" onPress={() => completeTask(item)} /> 
+      <Text>{item.itemTask}</Text>
       <AntDesign name="delete" size={24} color="red" onPress={() => handleModal(item)} />
     </View>
   )
@@ -37,8 +44,8 @@ export default function App() {
   }
 
   const onHandleDelete = item => {
-    console.log(item)
-    setTaskList(prevState => prevState.filter(element => element !== item))
+    console.log(item.itemTask)
+    setTaskList(prevState => prevState.filter(element => element.itemTask !== item.itemTask))
     setModalVisible(!modalVisble)
   }
 
@@ -63,7 +70,7 @@ export default function App() {
         <FlatList
           data={taskList}
           renderItem={printItem}
-          keyExtractor={item => item}
+          keyExtractor={(item) => item.task}
         />
       </View>
       <Modal
@@ -128,5 +135,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: "space-between",
     alignItems: "center",
+
   }
 });
