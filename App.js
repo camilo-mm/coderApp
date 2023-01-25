@@ -9,7 +9,6 @@ export default function App() {
   const [taskList, setTaskList] = React.useState([])
   const [itemSelected, setItemSelected] = useState("")
   const [modalVisble, setModalVisible] = useState(false)
-  const [completed, setCompleted] = useState()
 
   const onChangeValueInput = text => {
     setValueInput(text)
