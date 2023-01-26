@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'; 
+import {useFonts} from 'expo-font'
 import Modal from './src/components/Modal';
+import variables from './src/constants/variables'
+import ListScreen from './src/screens/ListScreen';
+import EmptyList from './src/screens/EmptyList'
+import {AppLoading} from 'expo-app-loading'
 
 export default function App() {
+  const [loaded] = useFonts({
+    pacifico: require('./assets/fonts/Pacifico-Regular.ttf')
+  })
 
   const [valueInput, setValueInput] = React.useState('')
   const [taskList, setTaskList] = React.useState([])
@@ -27,7 +35,7 @@ export default function App() {
 
   const printItem = ({item}) =>(
     <View style={styles.itemOnList} >
-      <AntDesign name={item.completed ? "checkcircle" : "check"} size={24} color="black" onPress={() => completeTask(item)} /> 
+      <AntDesign name={item.completed  ? "checkcircle" : "check"} size={24} color="black" onPress={() => completeTask(item)} /> 
       <Text>{item.itemTask}</Text>
       <AntDesign name="delete" size={24} color="red" onPress={() => handleModal(item)} />
     </View>
@@ -48,6 +56,19 @@ export default function App() {
     setModalVisible(!modalVisble)
   }
 
+  let contentView = <EmptyList />
+
+  if(taskList.length >= 1){
+    contentView = <ListScreen 
+    taskList={taskList} 
+    printItem={printItem}
+  />
+  }
+
+    if(!loaded) {
+    return null
+  } 
+
   return (
     <View style={styles.container}>
       <View style={styles.viewUno}>
@@ -65,13 +86,15 @@ export default function App() {
           />
         </View>
       </View>
-      <View style={styles.viewDos}>
+      {contentView}
+      
+      {/* <View style={styles.viewDos}>
         <FlatList
           data={taskList}
           renderItem={printItem}
           keyExtractor={(item) => item.task}
         />
-      </View>
+      </View> */}
       <Modal
         isVisible={modalVisble}
         itemSelected={itemSelected}
@@ -90,10 +113,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: variables.backgroundPrimary,
     alignItems: 'center',
     flexDirection: 'column',
-    backgroundColor: '#fff',
+    backgroundColor: variables.backgroundPrimary,
   },
   viewUno: {
     alignItems: 'center',
@@ -103,7 +126,8 @@ const styles = StyleSheet.create({
   },
   title:{
     fontSize: 40,
-    color: '#000',
+    color: variables.primaryColor,
+    fontFamily: 'Pacifico'
   },
   contentAddList: {
     flexDirection: 'row',
@@ -112,7 +136,7 @@ const styles = StyleSheet.create({
   viewDos: {
     flexDirection: 'row',
     marginBottom: 25,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: variables.grayColor,
     borderRadius: 10,
     padding: 10,
     justifyContent: "center",
@@ -126,7 +150,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   itemOnList: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: variables.backgroundPrimary,
     alignSelf: 'stretch',
     margin: 7,
     borderRadius: 15,

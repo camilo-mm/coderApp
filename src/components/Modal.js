@@ -1,5 +1,6 @@
 import React from "react"
 import { View, StyleSheet, Text, Button, Modal as NewModal } from "react-native"
+import variables from "../constants/variables"
 
 const Modal = ({
   isVisible,
@@ -34,11 +35,11 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     margin: 15,
-    backgroundColor: "white",
+    backgroundColor: variables.backgroundPrimary,
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
-    shadowColor: "#000000",
+    shadowColor: variables.primaryColor,
     shadowOffset: {
       width: 0,
       height: 2,
